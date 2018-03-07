@@ -37,6 +37,7 @@ router.post('/register', function (req,res,next) {
 
 //authenticate
 router.post('/authenticate', function (req,res,next) {
+    console.log('loda');
     const username = req.body.username;
     const password = req.body.password;
 
@@ -53,12 +54,12 @@ router.post('/authenticate', function (req,res,next) {
                 if(err) throw err;
 
                 if(isMatch){
-                    const token = jwt.sign(user.toJSON(),config.secret,{
+                    const token = jwt.sign({data: user},config.secret,{
                         expiresIn:604800  //1week
                     });
                     res.json({
                         success:true,
-                        token:'JWT' + token,
+                        token: 'JWT '+token,
                         user:{
                             id:user._id,
                             name:user.name,
@@ -78,8 +79,8 @@ router.post('/authenticate', function (req,res,next) {
 });
 
 //Profile
-router.get('/profile', function (req,res,next) {
-    res.send('Profile');
+router.get('/profile', passport.authenticate('jwt',{session:false}),function (req,res,next) {
+    res.json({user: req.user});
 });
 
 
