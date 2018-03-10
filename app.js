@@ -25,7 +25,7 @@ const app = express();
 
 const users = require('./routes/users');
 
-const port = 3000;
+const port = process.env.PORT || 8080;
 
 //CORS middleware
 app.use(cors());
@@ -46,7 +46,11 @@ app.use('/users',users);
 
 app.get('/',function (req,res) {
     res.send('Invalid endpoint');
-})
+});
+
+app.get('*', function (req,res) {
+   res.sendFile(path.join(__dirname,'public/index.html')) ;
+});
 
 app.listen(port,function () {
     console.log('Server started on port:' + port);
